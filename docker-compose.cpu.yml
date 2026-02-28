@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: glm-ocr-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.cache/ollama
+    # CPU-only mode no GPU resources
+    environment:
+      - OLLAMA_HOST=0.0.0.0
+    shm_size: '8g'
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    container_name: glm-ocr-api
+    ports:
+      - "80:8001"
+    environment:
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - UPLOAD_DIR=/app/uploads
+      - RESULT_DIR=/app/results
+      - MAX_FILE_SIZE=50MB
+    volumes:
+      - ./uploads:/app/uploads
+      - ./results:/app/results
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  ollama-models:
+
+networks:
+  default:
+    name: glm-ocr-network

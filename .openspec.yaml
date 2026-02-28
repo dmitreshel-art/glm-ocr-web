@@ -1,0 +1,7 @@
+name: glm-ocr-web
+description: Docker-приложение с веб-интерфейсом для распознавания документов на базе GLM-OCR
+status: active
+priority: high
+created: 2026-02-28T15:00:00Z
+updated: 2026-02-28T15:00:00Z
+tags: [docker, ocr, web-interface]
