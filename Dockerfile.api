@@ -18,9 +18,6 @@ RUN pip install --no-cache-dir \
     httpx==0.27.2 \
     python-dotenv==1.0.1
 
-# Install GLM-OCR
-RUN pip install --no-cache-dir glmocr
-
 COPY app /app
 
 # Create directories
